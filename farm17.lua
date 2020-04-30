@@ -4,8 +4,8 @@ local seedSlot = 2
 local storageStartSlot = 3
 local storageEndSlot = 16
 local refuelAmount = 1
-local colCount = 3
-local rowCount = 3
+local colCount = 17
+local rowCount = 17
 
 -- Moves forward, refueling and waiting as needed
 function forward()
@@ -25,6 +25,7 @@ end
 
 -- Reorient from droping items as to face farming direction
 function reorient()
+  print("Rorienting...")
   turtle.turnRight()
 end
 
@@ -75,6 +76,7 @@ end
 
 -- Farm zone
 function farm()
+  print("Farming...")
   shell.run("farm-zone", colCount, rowCount)
 end
 
