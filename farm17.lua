@@ -47,7 +47,7 @@ end
 function goBackHome()
   print("Going back home")
   if colCount % 2 > 0 then
-    for row = 1,rowCount do
+    for row = 1,rowCount - 1 do
       forward()
     end
     turtle.turnRight()
@@ -55,7 +55,7 @@ function goBackHome()
     turtle.turnLeft()
   end
 
-  for col = 1,colCount do
+  for col = 1,colCount - 1 do
     forward()
   end
 end
@@ -70,7 +70,7 @@ function waitStartSignal()
 	print("Waiting start signal...")
   repeat
     os.pullEvent("redstone")
-  until redstone.getInput("back")
+  until not redstone.getInput("back")
 end
 
 while true do
