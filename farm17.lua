@@ -36,7 +36,7 @@ function dropStorage()
 
   for slot = storageStartSlot,storageEndSlot do
     turtle.select(slot)
-    while not turtle.place() do
+    while not turtle.drop() do
       print("Not enough storage in chest, I'll be waiting")
       sleep(1)
     end
