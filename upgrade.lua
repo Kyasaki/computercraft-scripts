@@ -2,8 +2,8 @@
 -- upgrade [-b branch] [scriptName1, ...]
 
 local scriptsBaseUrl = "https://raw.githubusercontent.com/Kyasaki/computercraft-scripts"
-local branch = "master"
-local scripts = {"farm-zone", "upgrade", "wget"}
+local branch = "bazar"
+local scripts = {"farm17", "farm-zone", "upgrade"}
 
 -- Upgrades a script given its name
 function upgradeScript(scriptName)
