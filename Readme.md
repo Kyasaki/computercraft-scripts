@@ -15,8 +15,14 @@ You can now proudly invoke the upgrade script anytime and get those scripts in o
 Invoking the upgrade script will download an replace a given list of scripts from this repository into you computer/turtle.
 
 ```shell
-upgrade # Upgrade scripts registered in the default list
-upgrade script1, script2 # Upgrade only specified scripts. Do not add the .lua extension.
+# Upgrade scripts registered in the default list
+upgrade
+
+ # Upgrade only specified scripts. Do not add the .lua extension.
+upgrade script1 script2 ...
+
+# Use scripts from another branch. Useful for testing pull requests.
+upgrade -b feature/test-branch script1 script2 ...
 ```
 
 ## 3nj¤y your time, so precious!
