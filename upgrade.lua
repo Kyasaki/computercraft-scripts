@@ -13,7 +13,7 @@ function upgradeScript(scriptName)
 
 	local remoteScript = http.get(scriptUrl)
 	if not remoteScript then
-		error("Failed opening remote script at ", scriptUrl)
+		error("Failed opening remote script at " .. scriptUrl)
 	end
 
 	local localScript = fs.open(scriptPath, "w")
