@@ -1,8 +1,9 @@
 -- Wait a redstone signal, farms a 17 x 17 zone, goes back home, drops items to a chest and reset for next cycle
 local fuelSlot = 1
-local refuelAmount = 1
+local seedSlot = 2
 local storageStartSlot = 3
 local storageEndSlot = 16
+local refuelAmount = 1
 local colCount = 3
 local rowCount = 3
 
@@ -27,18 +28,30 @@ function reorient()
   turtle.turnRight()
 end
 
--- Drop storage items in a chest, waiting as needed
+-- Drops all seeds but one in a top chest, and the harvested ressources to a chest front
 function dropStorage()
   print("Dropping harvests...")
   while not turtle.detect() do
     print("Can't drop, need a chest front")
   end
+  while not turtle.detectUp() do
+    print("Can't drop, need a chest up")
+  end
 
   for slot = storageStartSlot,storageEndSlot do
-    turtle.select(slot)
-    while not turtle.drop() do
-      print("Not enough storage in chest, I'll be waiting")
-      sleep(1)
+    if turtle.getItemCount(slot) > 0 then
+      turtle.select(slot)
+      if turtle.compareTo(seedSlot) then
+        while not turtle.dropUp() do
+          print("Not enough storage in up chest, waiting")
+          sleep(1)
+        end
+      else
+        while not turtle.drop() do
+          print("Not enough storage in front chest, waiting")
+          sleep(1)
+        end
+      end
     end
   end
 end
