@@ -43,12 +43,12 @@ function dropStorage()
     if turtle.getItemCount(slot) > 0 then
       turtle.select(slot)
       if turtle.compareTo(seedSlot) then
-        while not turtle.dropUp() do
+        while not turtle.dropUp() and turtle.getItemCount() ~= 0 do
           print("Not enough storage in up chest, waiting")
           sleep(1)
         end
       else
-        while not turtle.drop() do
+        while not turtle.drop() and turtle.getItemCount() ~= 0 do
           print("Not enough storage in front chest, waiting")
           sleep(1)
         end
