@@ -1,19 +1,57 @@
 -- Picks some items by multiple of 9 in top inventory and places them in the bottom inventory
+-- Purges items left when a redstone signal is detected back
 
 local startSlot = 1
 local endSlot = 16
 local packAmount = 9
 local transferedItems -- keep track of the possibility to transfer again
+local currentSlot
 
--- selects a slot and drops packs of the selected slot when possible
+-- Purges inventory to left storage when a redstone signal is active back
+-- Makes sure to not affect the currently selected slot between executions
+-- To be called at the most critical points in program as to maximise chances of catching
+function detectPurge()
+  if redstone.getInput("back") then
+    print("Detected purge signal, purging to left side...")
+    turtle.turnLeft()
+    for slot = startSlot,endSlot do
+      turtle.select(slot)
+      turtle.drop()
+    end
+    turtle.turnRight()
+    print("Purge succesful")
+    turtle.select(currentSlot)
+  end
+end
+
+-- Sets the current slot. Used as to polyfill turtle.getSelectedSlot()
+-- Detects purge signals
+function selectSlot(slot)
+  detectPurge()
+  if turtle.select(slot) then
+    currentSlot = slot
+    return true
+  else
+    return false
+  end
+end
+
+-- Waits some time when blocked by an external operation
+-- Detects purge signals
+function wait()
+  sleep(1)
+  detectPurge()
+end
+
+-- Selects a slot and drops packs of the selected slot when possible
 function dropPacks(slot)
-  turtle.select(slot)
+  selectSlot(slot)
   while turtle.getItemCount(slot) >= packAmount do
     print("Pack available in slot ", slot)
     if not turtle.dropDown(packAmount) then -- wait packer is emtpy
       print("Waiting pack machine...")
-      while not turtle.dropDown(packAmount) do -- wait packer is emtpy
-        sleep(1)
+      while not turtle.dropDown(packAmount) and turtle.getItemCount(slot) ~= 0 do
+        wait()
       end
     end
     print("Pack picked")
@@ -34,7 +72,7 @@ while true do
         print("Fetching similar items")
         for transferSlot = startSlot,endSlot do
           if transferSlot ~= slot then
-            turtle.select(transferSlot)
+            selectSlot(transferSlot)
             if turtle.compareTo(slot) then
               dropPacks(transferSlot) -- drop before transfering, improving performance
               print("Transfering similar item from slot ", transferSlot)
@@ -47,7 +85,7 @@ while true do
               end
             end
           end
-          turtle.select(slot)
+          selectSlot(slot)
         end
       else
         print("Slot clear")
