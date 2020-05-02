@@ -3,7 +3,7 @@
 
 local scriptsBaseUrl = "https://raw.githubusercontent.com/Kyasaki/computercraft-scripts"
 local branch = "bazar"
-local scripts = {"farm17", "farm-zone", "upgrade"}
+local scripts = {"farm17", "farm-zone", "pack-picker", "upgrade"}
 
 -- Upgrades a script given its name
 function upgradeScript(scriptName)
