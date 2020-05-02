@@ -5,39 +5,46 @@ local endSlot = 16
 local packAmount = 9
 local transferedItems -- keep track of the possibility to transfer again
 
+-- selects a slot and drops packs of the selected slot when possible
+function dropPacks(slot)
+  turtle.select(slot)
+  while turtle.getItemCount(slot) >= packAmount do
+    print("Pack available in slot ", slot)
+    if not turtle.dropDown(packAmount) then -- wait packer is emtpy
+      print("Waiting pack machine...")
+      while not turtle.dropDown(packAmount) do -- wait packer is emtpy
+        sleep(1)
+      end
+    end
+    print("Pack picked")
+  end
+end
+
 while true do
   for slot = startSlot,endSlot do
-    print("Selecting slot ", slot)
-    turtle.select(slot)
+    print("Packing priority to slot ", slot)
     transferedItems = true
 
 		repeat -- pack until no more transfer is possible
-      -- drop packs when possible
-      while turtle.getItemCount(slot) >= packAmount do
-        print("Pack available")
-        if not turtle.dropDown(packAmount) then -- wait packer is emtpy
-          print("Waiting pack machine...")
-          while not turtle.dropDown(packAmount) do -- wait packer is emtpy
-            sleep(1)
-          end
-        end
-        print("Pack picked")
-      end
+      dropPacks(slot)
 
       -- fetch similar item in other slots and transfer to current slot if not empty
       transferedItems = false
       if turtle.getItemCount(slot) > 0 then
         print("Fetching similar items")
         for transferSlot = startSlot,endSlot do
-          turtle.select(transferSlot)
-          if transferSlot ~= slot and turtle.compareTo(slot) then
-            print("Transfering similar item from slot ", transferSlot)
-            turtle.transferTo(slot)
-            transferedItems = true
-            -- stop transfer fetching if current slot is full
-            if turtle.getItemSpace(slot) == 0 then
-              print("Transfer fetching aborted, slot is full")
-              break
+          if transferSlot ~= slot then
+            turtle.select(transferSlot)
+            if turtle.compareTo(slot) then
+              dropPacks(transferSlot) -- drop before transfering, improving performance
+              print("Transfering similar item from slot ", transferSlot)
+              turtle.transferTo(slot)
+              transferedItems = true
+              -- stop transfer fetching if current slot is full
+              if turtle.getItemSpace(slot) == 0 then
+                print("Transfer fetching aborted, slot is full")
+                break
+              end
             end
           end
           turtle.select(slot)
