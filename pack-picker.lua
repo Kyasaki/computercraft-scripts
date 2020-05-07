@@ -4,7 +4,8 @@
 local startSlot = 1
 local endSlot = 16
 local packAmount = 9
-local transferedItems -- keep track of the possibility to transfer again
+local transferedItems = false -- keep track of the possibility to transfer again
+local droppedSomePack = false -- if no item have been packed checking all slots, recirculate items as to get different ones
 local currentSlot
 
 -- Purges inventory to left storage when a redstone signal is active back
@@ -43,6 +44,15 @@ function wait()
   detectPurge()
 end
 
+function recirculate()
+  print("Recirculating items...")
+  for slot = startSlot,endSlot do
+    selectSlot(slot)
+    turtle.dropUp()
+  end
+  print("Recirculating succesful")
+end
+
 -- Selects a slot and drops packs of the selected slot when possible
 function dropPacks(slot)
   selectSlot(slot)
@@ -54,16 +64,18 @@ function dropPacks(slot)
         wait()
       end
     end
+    droppedSomePack = true
     print("Pack droped")
   end
 end
 
 while true do
+  droppedSomePack = false
   for slot = startSlot,endSlot do
     print("Packing priority to slot ", slot)
     transferedItems = true
 
-	repeat -- pack until no more transfer is possible
+	  repeat -- pack until no more transfer is possible
       dropPacks(slot)
 
       -- fetch similar item in other slots and transfer to current slot if not empty
@@ -73,7 +85,7 @@ while true do
         for transferSlot = startSlot,endSlot do
           if transferSlot ~= slot then
             selectSlot(transferSlot)
-			dropPacks(transferSlot) -- drop before transfering, improving performance
+			      dropPacks(transferSlot) -- drop before transfering, improving performance
             if turtle.compareTo(slot) then
               print("Transfering similar item from slot ", transferSlot)
               turtle.transferTo(slot)
@@ -91,5 +103,8 @@ while true do
         print("Slot clear")
       end
     until not transferedItems
-	end
+  end
+  if not droppedSomePack then
+    recirculate()
+  end
 end
