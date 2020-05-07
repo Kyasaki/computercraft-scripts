@@ -54,7 +54,7 @@ function dropPacks(slot)
         wait()
       end
     end
-    print("Pack picked")
+    print("Pack droped")
   end
 end
 
@@ -63,7 +63,7 @@ while true do
     print("Packing priority to slot ", slot)
     transferedItems = true
 
-		repeat -- pack until no more transfer is possible
+	repeat -- pack until no more transfer is possible
       dropPacks(slot)
 
       -- fetch similar item in other slots and transfer to current slot if not empty
@@ -73,8 +73,8 @@ while true do
         for transferSlot = startSlot,endSlot do
           if transferSlot ~= slot then
             selectSlot(transferSlot)
+			dropPacks(transferSlot) -- drop before transfering, improving performance
             if turtle.compareTo(slot) then
-              dropPacks(transferSlot) -- drop before transfering, improving performance
               print("Transfering similar item from slot ", transferSlot)
               turtle.transferTo(slot)
               transferedItems = true
